@@ -133,9 +133,17 @@ stages:
               #  artifactName: 'drop'
               #  targetPath: '$(Pipeline.Workspace)'
 
+         # - task: AzureWebApp@1
+         #   inputs:
+         #       appType: 'webAppLinux'
+         #       appName: 'space-game-zap'
+         #       #package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+         #       package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip' #'$(Pipeline.Workspace)/**/*.zip'
+
+
           - task: AzureWebApp@1
             inputs:
+                azureSubscription: 'space-game-zap'
                 appType: 'webAppLinux'
                 appName: 'space-game-zap'
-                #package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip' #'$(Pipeline.Workspace)/**/*.zip'
+                package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'#'$(System.DefaultWorkingDirectory)/**/*.zip'
