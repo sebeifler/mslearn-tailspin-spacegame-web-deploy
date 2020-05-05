@@ -118,9 +118,9 @@ stages:
   - deployment: Deploy
     pool:
       vmImage: 'ubuntu-16.04'
-    environment: dev
-    variables:
-    - group: 'Release Pipeline'
+    #environment: dev
+    #variables:
+    #- group: 'Release Pipeline'
     strategy:
       runOnce:
         deploy:
