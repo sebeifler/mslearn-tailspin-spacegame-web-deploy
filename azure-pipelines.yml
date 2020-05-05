@@ -91,7 +91,7 @@ stages:
     
     - task: WhiteSource@20
       displayName: 'Download the latest Unified Agent'
-    - script: 'curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar'
+    - script: curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar
       #workingDirectory: ''#$(wwwrootDir)
     - task: WhiteSource@20
       displayName: 'Run Unified Agent Scan'
