@@ -13,8 +13,9 @@ pool:
   demands:
   - npm
 
-variables:
-  buildConfiguration: 'Release'
+# 
+#variables:
+#  buildConfiguration: 'Release'
 
 #steps:
 #- script: dotnet build --configuration $(buildConfiguration)
@@ -34,7 +35,7 @@ steps:
 
 - script: './node_modules/.bin/node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.SpaceGame.Web/wwwroot'
   displayName: 'Compile Sass assets'
-
+# gulp tasks  minifies JavaScript and CSS assets
 - task: gulp@1
   displayName: 'Run gulp tasks'
 
@@ -54,3 +55,16 @@ steps:
     command: 'build'
     arguments: '--no-restore --configuration Release'
     projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish the project - Release'
+  inputs:
+    command: 'publish'
+    projects: '**/*.csproj'
+    publishWebProjects: false
+    arguments: '--no-build --configuration Release --output $(Build.ArtifactStagingDirectory)/Release'
+    zipAfterPublish: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  condition: succeeded()
