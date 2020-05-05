@@ -125,15 +125,17 @@ stages:
       runOnce:
         deploy:
           steps:
-            - task: DownloadPipelineArtifact@2
-              inputs:
-                buildType: 'current'
-                artifactName: 'drop'
-                targetPath: '$(Pipeline.Workspace)'
+          - download: current
+            artifact: drop
+            #- task: DownloadPipelineArtifact@2
+             # inputs:
+             #   buildType: 'current'
+              #  artifactName: 'drop'
+              #  targetPath: '$(Pipeline.Workspace)'
 
-            - task: AzureWebApp@1
-              inputs:
+          - task: AzureWebApp@1
+            inputs:
                 appType: 'webAppLinux'
                 appName: 'space-game-zap'
                 #package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                package: '$(Pipeline.Workspace)/**/*.zip'
+                package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip' #'$(Pipeline.Workspace)/**/*.zip'
