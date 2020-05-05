@@ -125,15 +125,15 @@ stages:
       displayName: 'Publish Artifact: drop'
       condition: succeeded()
 
-    - task: WhiteSource@20
-      inputs:
-        cwd: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/'
-        extensions: '.dll'
-        checkPolicies: 'SEND_ALERTS'
-        productName: 'Small_Test'
-        projectRule: 'projectName'
-        projectName: 'DotNet-Space'
-        WhiteSourceService: 'WhiteSource_DotNet'
+  #  - task: WhiteSource@20
+  #    inputs:
+  #      cwd: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/'
+  #      extensions: '.dll'
+  #      checkPolicies: 'SEND_ALERTS'
+  #      productName: 'Small_Test'
+  #      projectRule: 'projectName'
+  #      projectName: 'DotNet-Space'
+  #      WhiteSourceService: 'WhiteSource_DotNet'
    
 
 
@@ -175,4 +175,14 @@ stages:
                 package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'#'$(System.DefaultWorkingDirectory)/**/*.zip'
 
 
-          
+          - task: owaspzap@1
+            displayName: 'ZAP'
+            inputs:
+              scantype: 'targetedScan'
+              url: 'http://space-game-zap.azurewebsites.net/'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.SourcesDirectory)/owaspzap'
+              ArtifactName: 'Zap Reports'
+          #    publishLocation: 'Container'
