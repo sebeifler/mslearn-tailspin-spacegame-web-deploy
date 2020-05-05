@@ -17,7 +17,8 @@ pool:
 variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
-  dotnetSdkVersion: '3.1.100'
+  dotnetSdkVersionBuild: '3.1.100'
+  dotnetSdkVersionSonar: '2.2.103'
 
 
 #steps:
@@ -25,11 +26,14 @@ variables:
 #  displayName: 'dotnet build $(buildConfiguration)'
 
 steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core SDK $(dotnetSdkVersionSonar) For Sonar Cloud'
   inputs:
-    packageType: sdk
-    version: '$(dotnetSdkVersion)'
+    version: '$(dotnetSdkVersionSonar)'
+
+- script: dotnet --list-sdks
+  displayName: 'Check dotnet sdks'
+
 
 - task: Npm@1
   displayName: 'Run npm install'
@@ -53,6 +57,14 @@ steps:
   displayName: 'Write build info'
   workingDirectory: $(wwwrootDir)
 
+- task: UseDotNet@2
+  displayName: 'Use .NET Core SDK $(dotnetSdkVersionBuild)'
+  inputs:
+    packageType: sdk
+    version: '$(dotnetSdkVersionBuild)'
+
+- script: dotnet --list-sdks
+  displayName: 'Check dotnet sdks'
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
   inputs:
@@ -66,8 +78,20 @@ steps:
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core SDK $(dotnetSdkVersionSonar) For Sonar Cloud'
+  inputs:
+    version: '$(dotnetSdkVersionSonar)'
 - task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
 
+- task: UseDotNet@2
+  displayName: 'Use .NET Core SDK $(dotnetSdkVersionBuild)'
+  inputs:
+    packageType: sdk
+    version: '$(dotnetSdkVersionBuild)'
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
   inputs:
@@ -81,6 +105,3 @@ steps:
   displayName: 'Publish Artifact: drop'
   condition: succeeded()
 
-- task: SonarCloudPublish@1
-  inputs:
-    pollingTimeoutSec: '300'
