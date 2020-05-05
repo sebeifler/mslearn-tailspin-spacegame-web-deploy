@@ -88,16 +88,15 @@ stages:
     - task: SonarCloudPublish@1
       inputs:
         pollingTimeoutSec: '300'
-   
-    - script: |
-        curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar 
-        displayName: 'Download the latest Unified Agent'
-      #  enabled: false
-
-    - script: |
-        java -jar wss-unified-agent.jar -c agent_dev.config -apiKey 7018d66ec77b40b4b3b4002797f1f059280c637834ae4701961d5f0a4f8e17b3 -product Small_Test -project DotNet-Space
-        displayName: 'Run Unified Agent Scan'
-      #  enabled: false
+    
+    - task: WhiteSource@20
+      displayName: 'Download the latest Unified Agent'
+    - script: 'curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar'
+      #workingDirectory: ''#$(wwwrootDir)
+    - task: WhiteSource@20
+      displayName: 'Run Unified Agent Scan'
+    - script: 'java -jar wss-unified-agent.jar -c agent_dev.config -apiKey 7018d66ec77b40b4b3b4002797f1f059280c637834ae4701961d5f0a4f8e17b3 -product Small_Test -project DotNet-Space'
+      #workingDirectory: ''#$(wwwrootDir)
 
     - task: UseDotNet@2
       displayName: 'Use .NET Core SDK $(dotnetSdkVersionBuild)'
