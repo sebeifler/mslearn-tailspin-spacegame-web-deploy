@@ -89,14 +89,19 @@ stages:
       inputs:
         pollingTimeoutSec: '300'
     
-    - task: CmdLine@2
-      displayName: 'Download the latest Unified Agent'
-      inputs:
-        script: 'curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar'
+  #  - task: CmdLine@1
+  #    inputs:
+  #      script: curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar 
+  #    displayName: 'Download the latest Unified Agent'
+
+  #  - task: CmdLine@2
+  #    displayName: 'Download the latest Unified Agent'
+  #    inputs:
+  #      script: 'curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar'
     
-    - task: CmdLine@2
-      inputs:
-        script: 'java -jar wss-unified-agent.jar -c agent_dev.config -apiKey 7018d66ec77b40b4b3b4002797f1f059280c637834ae4701961d5f0a4f8e17b3 -product Small_Test -project DotNet-Space'
+  #  - task: CmdLine@2
+  #    inputs:
+  #      script: 'java -jar wss-unified-agent.jar -c agent_dev.config -apiKey 7018d66ec77b40b4b3b4002797f1f059280c637834ae4701961d5f0a4f8e17b3 -product Small_Test -project DotNet-Space'
    # - task: WhiteSource@20
    #   displayName: 'Run Unified Agent Scan'
    # - script: java -jar wss-unified-agent.jar -c agent_dev.config -apiKey 7018d66ec77b40b4b3b4002797f1f059280c637834ae4701961d5f0a4f8e17b3 -product Small_Test -project DotNet-Space
@@ -120,7 +125,15 @@ stages:
       displayName: 'Publish Artifact: drop'
       condition: succeeded()
 
-
+    - task: WhiteSource@20
+      inputs:
+        cwd: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/'
+        extensions: '.dll'
+        checkPolicies: 'SEND_ALERTS'
+        productName: 'Small_Test'
+        projectRule: 'projectName'
+        projectName: 'DotNet-Space'
+        WhiteSourceService: 'WhiteSource_DotNet'
    
 
 
@@ -160,3 +173,6 @@ stages:
                 appType: 'webAppLinux'
                 appName: 'space-game-zap'
                 package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'#'$(System.DefaultWorkingDirectory)/**/*.zip'
+
+
+          
