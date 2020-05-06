@@ -178,9 +178,11 @@ stages:
           - task: owaspzap@1
             displayName: 'ZAP'
             inputs:
-              threshold: 75
+              threshold: 200
               scantype: 'targetedScan'
               url: 'http://space-game-zap.azurewebsites.net/'
+          
+
 
           - task: PublishBuildArtifacts@1
             inputs:
