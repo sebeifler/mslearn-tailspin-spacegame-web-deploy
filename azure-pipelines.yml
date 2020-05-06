@@ -28,6 +28,14 @@ stages:
       dotnetSdkVersionSonar: '2.2.103'
 
     steps:
+    
+    - script: curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar
+      displayName: 'Download the latest Unified Agent'
+    #- task: CmdLine@1
+    #  inputs:
+    #    script: curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar 
+    #    displayName: 'Download the latest Unified Agent'
+
     - task: DotNetCoreInstaller@0
       displayName: 'Use .NET Core SDK $(dotnetSdkVersionSonar) For Sonar Cloud'
       inputs:
